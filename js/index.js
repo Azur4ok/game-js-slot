@@ -1,58 +1,95 @@
-import { fetchData } from '../service/fetchImages.js';
+import { fetchData } from '../service/fetchImages.js'
 
 window.addEventListener('load', async function () {
   const canvas = document.querySelector('.canvas'),
-    button = document.querySelector('.btn'),
-    select = this.document.querySelector('.select'),
-    ctx = canvas.getContext('2d');
+    ctx = canvas.getContext('2d'),
+    select = this.document.querySelector('.select')
 
-  const CANVAS_WIDTH = (canvas.width = 300);
-  const CANVAS_HEIGHT = (canvas.height = 250);
+  const CANVAS_WIDTH = (canvas.width = 960)
+  const CANVAS_HEIGHT = (canvas.height = 536)
 
-  const images = await fetchData();
+  const images = await fetchData()
 
-  const startDate = String(new Date()).split(' ')[4].split(':')[2];
-  const image = new Image();
-  console.log(startDate);
-
-  function animate() {
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    image.src = images[Math.floor(Math.random() * images.length)].src;
-    ctx.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-    requestAnimationFrame(animate);
-  }
-
-  function drawImage() {
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    const option = document.querySelector('select').selectedOptions[0].textContent;
-    const index = images.findIndex((img) => img.name === option);
-    image.src = images[index].src;
-
-    return ctx.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  }
+  const imagesArray =
+    images &&
+    images.map((img) => {
+      const image = new Image()
+      image.src = img.src
+      return { [img.name]: image }
+    })
+  const imagesKeys = imagesArray.map((img) => Object.keys(img)).flat()
+  const bgImg = imagesKeys.indexOf('bg')
+  const button = imagesKeys.indexOf('button') 
+  const buttonD = imagesKeys.indexOf('button_d') 
+  console.log(imagesArray);
 
   class App {
-    static main() {
-      this.drawOptions();
+    randomImg = null
+    choice = null
+    image = null
+    y = 0
 
-      button.addEventListener('click', () => {
-        button.style.background = 'url("./img/BTN_Spin_d.png") no-repeat';
-        button.style.backgroundSize = 100 + '%';
-        button.ariaDisabled = true;
-        animate()
-      });
-      select.addEventListener('change', drawImage);
+    game() {
+      select.style.display = 'block'
+      select.addEventListener('change', this.drawImage)
+      this.drawOptions()
+      imagesArray[bgImg].bg.onload = () => {
+        ctx.drawImage(imagesArray[bgImg].bg, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+      }
     }
 
-    static drawOptions() {
+    drawOptions() {
       images.forEach((image) => {
-        const option = document.createElement('option');
-        option.textContent = image.name;
-        select.append(option);
-      });
+        if (image.name === 'button' || image.name === 'button_d' || image.name === 'bg') return
+        const option = document.createElement('option')
+        option.textContent = image.name
+        select.append(option)
+      })
     }
+
+    drawImage = () => {
+      const option = document.querySelector('select').selectedOptions[0].textContent
+      const obj = imagesArray.find((img) => img[option])
+      this.choice = imagesArray.indexOf(obj)
+      this.image = imagesArray[this.choice][option]
+      this.showImage()
+      this.animate()
+    }
+
+    showImage = () => {
+      ctx.clearRect(350, 200, 240, 170)
+      ctx.strokeRect(350, 200, 240, 170)
+      ctx.drawImage(this.image, 350, 200, 240, this.y)
+      if (this.y >= 170) {
+        this.y = 0
+        return null
+      }
+      this.y += 10
+      requestAnimationFrame(this.showImage)
+    }
+
+    animate = (timestamp) => {
+      this.randomImg = Math.floor(Math.random() * 6)
+      console.log(this.randomImg);
+      const randomKey = imagesKeys[this.randomImg]
+      this.image = imagesArray[this.randomImg][randomKey]
+      console.log(this.choice, this.randomImg);
+      if (timestamp >= 3500) return
+
+      requestAnimationFrame(this.showImage)
+
+      this.showImage()
+      setTimeout(() => {
+        requestAnimationFrame(this.animate)
+      }, 250)
+    }
+
+    drawButton = () => {
+
+    }
+
   }
 
-  App.main();
-});
+  const app = new App()
+  app.game()
+})
