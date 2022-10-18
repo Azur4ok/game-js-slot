@@ -12,12 +12,17 @@ body {
     overflow: hidden;
 }
 
+.canvas {
+    position: absolute;
+    
+}
+
 
 .select {
     display: none;
     position: absolute;
     height: 30px;
     width: 150px;
-    top: 50%;
-    left: 60%
+    top: 48.5%;
+    left: 27%
 }
