@@ -157,15 +157,11 @@ window.addEventListener('load', async function () {
             })
             gsap.to(store.animatedSymbols[i], {
               duration: 0.1,
-              repeat: 10,
               y: (i + 1) * SYMBOL_HEIGHT,
               onRepeat: handleRepeat,
             })
           }
         }
-        gsap.set(store.animatedSymbols[i], {
-          y: i * SYMBOL_HEIGHT,
-        })
 
         gsap.to(store.animatedSymbols[i], {
           duration: 0.1,
