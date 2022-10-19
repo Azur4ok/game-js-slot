@@ -104,7 +104,13 @@ window.addEventListener('load', async function () {
 
     drawOptions() {
       images.forEach((image) => {
-        if (image.name === 'button' || image.name === 'button_d' || image.name === 'bg') return
+        if (
+          image.name === 'button' ||
+          image.name === 'button_d' ||
+          image.name === 'bg' ||
+          image.name === 'bet_line'
+        )
+          return
         const option = document.createElement('option')
         option.textContent = image.name
         select.append(option)
@@ -141,7 +147,7 @@ window.addEventListener('load', async function () {
               y: i * SYMBOL_HEIGHT,
             })
             gsap.to(store.animatedSymbols[i], {
-              duration: 0.2,
+              duration: 0.1,
               y: (i + 1) * SYMBOL_HEIGHT,
               onRepeat: handleRepeat,
             })
@@ -150,7 +156,8 @@ window.addEventListener('load', async function () {
               y: i * SYMBOL_HEIGHT,
             })
             gsap.to(store.animatedSymbols[i], {
-              duration: 0.2,
+              duration: 0.1,
+              repeat: 10,
               y: (i + 1) * SYMBOL_HEIGHT,
               onRepeat: handleRepeat,
             })
@@ -161,7 +168,7 @@ window.addEventListener('load', async function () {
         })
 
         gsap.to(store.animatedSymbols[i], {
-          duration: 0.2,
+          duration: 0.1,
           y: (i + 1) * SYMBOL_HEIGHT,
           repeat: 10,
           onRepeat: handleRepeat,
