@@ -3,52 +3,26 @@
     margin: 0
 }
 
+body {
+    margin: 90px 300px;
+    background-color: #74c461;
+}
+
 .app {
-    height: 100vh;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    background: url('./img/BG.png') no-repeat;
-    background-position: center;
-    background-size: cover;
+    overflow: hidden;
 }
 
 .canvas {
-    border-radius: 20px;
-    border: 1px solid #fff;
-    height: 250px;
-    width: 300px;
+    position: absolute;
+    
 }
 
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.wrapper > h2 {
-    color: greenyellow;
-    margin-bottom: 30px;
-    font-size: 60px;
-}
 
 .select {
+    display: none;
+    position: absolute;
     height: 30px;
     width: 150px;
-}
-
-
-.btn {
-    margin-top: 20px;
-    width: 50px;
-    height: 50px;
-    background: url('./img/BTN_Spin.png') no-repeat;
-    background-size: 100%;
-    border: none;
-    cursor: pointer;
-}
-
-.btn:hover {
-    scale: 1.01;
+    top: 48.5%;
+    left: 27%
 }

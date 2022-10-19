@@ -4,5 +4,8 @@
   { "name": "strawberry", "src": "img/SYM3.png" },
   { "name": "watermelon", "src": "img/SYM6.png" },
   { "name": "pineapple", "src": "img/SYM4.png" },
-  { "name": "grape", "src": "img/SYM7.png" }
+  { "name": "grape", "src": "img/SYM7.png" },
+  { "name": "bg", "src": "img/BG.png" },
+  { "name": "button", "src": "img/BTN_Spin.png" },
+  { "name": "button_d", "src": "img/BTN_Spin_d.png" }
 ]
