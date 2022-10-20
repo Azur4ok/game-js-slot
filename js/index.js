@@ -78,6 +78,19 @@ window.addEventListener('load', async function () {
       width: 400,
       height: 10,
     },
+    frame: {
+      color: 'rgba(100, 149, 255, 0.2)',
+      x: CANVAS_WIDTH * 0.5 - 150,
+      y: CANVAS_HEIGHT * 0.5 - 120,
+      width: 300,
+      height: 300,
+    },
+    message: {
+      color: '',
+      text1: '',
+      text2: '',
+      font: '50px san-serif',
+    },
   }
 
   for (let i = 0; i < 3; i++) {
@@ -132,54 +145,96 @@ window.addEventListener('load', async function () {
 
     animate = () => {
       for (let i = 0; i < store.animatedSymbols.length; i++) {
-        const handleRepeat = () => {
-          if (i === 0) {
-            store.animatedSymbols.pop()
-            const object = Utils.createImageObject(
-              Utils.getRandomImage(imagesArray, imagesKeys),
-              store.symbolX,
-              i * SYMBOL_HEIGHT,
-              SYMBOL_WIDTH,
-              SYMBOL_HEIGHT,
-            )
-            store.animatedSymbols.unshift(object)
-            gsap.set(store.animatedSymbols[i], {
-              y: i * SYMBOL_HEIGHT,
-            })
-            gsap.to(store.animatedSymbols[i], {
-              duration: 0.1,
-              y: (i + 1) * SYMBOL_HEIGHT,
-              onRepeat: handleRepeat,
-            })
-          } else {
-            gsap.set(store.animatedSymbols[i], {
-              y: i * SYMBOL_HEIGHT,
-            })
-            gsap.to(store.animatedSymbols[i], {
-              duration: 0.1,
-              y: (i + 1) * SYMBOL_HEIGHT,
-              onRepeat: handleRepeat,
-            })
-          }
-        }
-
         gsap.to(store.animatedSymbols[i], {
           duration: 0.1,
           y: (i + 1) * SYMBOL_HEIGHT,
-          repeat: 10,
-          onRepeat: handleRepeat,
-          onComplete: this.handleComplete,
+          repeat: 20,
+          ease: 'none',
+          onRepeat: () => this.handleRepeat(i),
+          onComplete: () => this.handleComplete(i),
         })
       }
     }
 
-    handleComplete = () => {
-      isEnd = true
+    handleRepeat = (i, key = 'repeat') => {
+      if (i === 0) {
+        store.animatedSymbols.pop()
+        const object = Utils.createImageObject(
+          Utils.getRandomImage(imagesArray, imagesKeys),
+          store.symbolX,
+          i * SYMBOL_HEIGHT,
+          SYMBOL_WIDTH,
+          SYMBOL_HEIGHT,
+        )
+        store.animatedSymbols.unshift(object)
+      } else {
+        gsap.set(store.animatedSymbols[i], {
+          y: i * SYMBOL_HEIGHT,
+        })
+      }
+      if (key !== 'complete') {
+        gsap.to(store.animatedSymbols[i], {
+          duration: 0.1,
+          y: (i + 1) * SYMBOL_HEIGHT,
+          ease: 'none',
+        })
+      }
+    }
+
+    handleComplete = (i) => {
+      if (i === 2) {
+        for (let j = 0; j < store.animatedSymbols.length; j++) {
+          this.handleRepeat(j, 'complete')
+        }
+        isEnd = true
+        this.checkWinOrLoose()
+      }
+    }
+
+    checkWinOrLoose = () => {
+      if (store.chosenSymbol.image === store.animatedSymbols[1].image) {
+        store.message.color = 'green'
+        store.message.text1 = 'You win!!!'
+        store.message.text2 = 'Well done!'
+      } else {
+        store.message.color = 'black'
+        store.message.text1 = 'You lost :('
+        store.message.text2 = 'Try Again'
+      }
+    }
+
+    drawWinOrLose = () => {
+      ctx.textAlign = 'center'
+      store.spinButton.image = buttonImg
+      store.spinButton.x = CANVAS_WIDTH * 0.5 - 50
+      store.spinButton.y = CANVAS_WIDTH * 0.5 - 130
+      store.spinButton.width = 90
+      store.spinButton.height = 90
+      ctx.fillStyle = store.frame.color
+      Utils.roundRect(
+        ctx,
+        store.frame.x,
+        store.frame.y,
+        store.frame.width,
+        store.frame.height,
+        10,
+        true,
+        false,
+      )
+      ctx.font = store.message.font
+      ctx.fillStyle = store.message.color
+      ctx.strokeText(store.message.text1, CANVAS_WIDTH * 0.5, CANVAS_HEIGHT * 0.5 - 30)
+      ctx.strokeText(store.message.text2, CANVAS_WIDTH * 0.5, CANVAS_HEIGHT * 0.5 + 50)
+      ctx.fillText(store.message.text1, CANVAS_WIDTH * 0.5, CANVAS_HEIGHT * 0.5 - 30)
+      ctx.fillText(store.message.text2, CANVAS_WIDTH * 0.5, CANVAS_HEIGHT * 0.5 + 50)
     }
 
     draw = () => {
       requestAnimationFrame(this.draw)
       this.drawImages()
+      if (isEnd) {
+        this.drawWinOrLose()
+      }
     }
 
     drawImages = () => {
@@ -207,14 +262,26 @@ window.addEventListener('load', async function () {
         this.animate()
         store.spinButton.image = disabledButtonImg
       }
+      if (
+        event.offsetX >= 430 &&
+        event.offsetX <= 540 &&
+        event.offsetY >= 300 &&
+        event.offsetY <= 410
+      ) {
+       window.location.reload()
+      }
     }
 
     handleButtonMouseMove = (event) => {
       if (
-        buttonLeftEdge <= event.offsetX &&
-        buttonRightEdge >= event.offsetX &&
-        buttonTopEdge <= event.offsetY &&
-        event.offsetY <= buttonBottomEdge
+        (buttonLeftEdge <= event.offsetX &&
+          buttonRightEdge >= event.offsetX &&
+          buttonTopEdge <= event.offsetY &&
+          event.offsetY <= buttonBottomEdge) ||
+        (event.offsetX >= 430 &&
+          event.offsetX <= 540 &&
+          event.offsetY >= 370 &&
+          event.offsetY <= 480)
       ) {
         canvas.style.cursor = 'pointer'
       } else {

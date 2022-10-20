@@ -4,16 +4,17 @@
 }
 
 body {
-    margin: 90px 300px;
     background-color: #74c461;
 }
 
 .app {
-    overflow: hidden;
+    position: absolute;
 }
 
 .canvas {
-    position: absolute;
+    margin-top: 100px;
+    position: relative;
+    left: 30%;
 }
 
 
@@ -22,6 +23,6 @@ body {
     position: absolute;
     height: 30px;
     width: 150px;
-    top: 48.5%;
-    left: 27%
+    top: 55%;
+    left: 42%
 }
