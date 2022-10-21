@@ -77,10 +77,10 @@ window.addEventListener('load', async function () {
     },
     frame: {
       color: 'rgba(205, 204, 205, 0.4)',
-      x: CANVAS_WIDTH * 0.5 - 150,
-      y: CANVAS_HEIGHT * 0.5 - 120,
-      width: 300,
-      height: 300,
+      x: CANVAS_WIDTH * 0.5 - 120,
+      y: CANVAS_HEIGHT * 0.5 - 100,
+      width: 250,
+      height: 200,
     },
     message: {
       color: '',
@@ -128,6 +128,8 @@ window.addEventListener('load', async function () {
     }
 
     handleChangeOption = () => {
+      isEnd = false
+      isRunning = false
       const option = document.querySelector('select').selectedOptions[0].textContent
       const obj = imagesArray.find((img) => img[option])
       const choice = imagesArray.indexOf(obj)
@@ -199,24 +201,25 @@ window.addEventListener('load', async function () {
         store.message.text1 = 'You lost :('
         store.message.text2 = 'Try Again'
       }
+      store.spinButton.image = buttonImg
     }
 
     animateFrame = () => {
       gsap.to(store.frame, {
         duration: 1,
-        x: CANVAS_WIDTH * 0.5 - 230,
-        y: CANVAS_HEIGHT * 0.5 - 200,
-        width: 450,
-        height: 400,
+        x: CANVAS_WIDTH * 0.5 - 180,
+        y: CANVAS_HEIGHT * 0.5 - 150,
+        width: 350,
+        height: 300,
         ease: 'none',
       })
 
       gsap.to(store.frame, {
         duration: 1,
-        x: CANVAS_WIDTH * 0.5 - 150,
-        y: CANVAS_HEIGHT * 0.5 - 120,
-        width: 300,
-        height: 300,
+        x: CANVAS_WIDTH * 0.5 - 120,
+        y: CANVAS_HEIGHT * 0.5 - 100,
+        width: 250,
+        height: 200,
         delay: 0.7,
         ease: 'none',
       })
@@ -224,11 +227,6 @@ window.addEventListener('load', async function () {
 
     drawFrame = () => {
       ctx.textAlign = 'center'
-      store.spinButton.image = buttonImg
-      store.spinButton.x = CANVAS_WIDTH * 0.5 - 50
-      store.spinButton.y = CANVAS_WIDTH * 0.5 - 130
-      store.spinButton.width = 90
-      store.spinButton.height = 90
       ctx.fillStyle = store.frame.color
       Utils.roundRect(
         ctx,
@@ -281,14 +279,6 @@ window.addEventListener('load', async function () {
         isEnd = false
         this.animate()
         store.spinButton.image = disabledButtonImg
-      }
-      if (
-        event.offsetX >= 430 &&
-        event.offsetX <= 540 &&
-        event.offsetY >= 300 &&
-        event.offsetY <= 410
-      ) {
-        window.location.reload()
       }
     }
 

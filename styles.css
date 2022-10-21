@@ -8,21 +8,32 @@ body {
 }
 
 .app {
-    position: absolute;
+    text-align: center;
 }
 
 .canvas {
-    margin-top: 100px;
-    position: relative;
-    left: 30%;
+    position: absolute;
+    z-index: 2;
+    margin: 0 auto;
+    right: 0;
+    left: 0;
+    top: 12%;
+
 }
 
+.container {
+    width: 960px;
+    height: 536px;
+    position: relative;
+    margin: 68px auto 0 auto;
+}
 
 .select {
+    z-index: 3;
     display: none;
     position: absolute;
     height: 30px;
     width: 150px;
-    top: 55%;
-    left: 42%
+    top: 49%;
+    left: 12%;
 }
