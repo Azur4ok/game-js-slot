@@ -3,7 +3,7 @@ import { Utils } from './utils.js'
 window.addEventListener('load', async function () {
   const canvas = document.querySelector('.canvas'),
     ctx = canvas.getContext('2d'),
-    select = this.document.querySelector('.select')
+    select = document.querySelector('.select')
 
   const CANVAS_WIDTH = (canvas.width = 960)
   const CANVAS_HEIGHT = (canvas.height = 536)
@@ -19,7 +19,9 @@ window.addEventListener('load', async function () {
   const images = await Utils.fetchData('data/data.json')
 
   let count = 0
+  let isEnd = false
   let isRunning = false
+
   const imagesArray =
     images &&
     images.map((img) => {
@@ -28,24 +30,19 @@ window.addEventListener('load', async function () {
       image.onload = () => {
         count++
         if (count === images.length) {
-          console.log('h')
           const app = new App()
           app.game()
         }
       }
       return { [img.name]: image }
     })
+
   const imagesKeys = imagesArray.map((img) => Object.keys(img)).flat()
 
-  const bgImgIndx = imagesKeys.indexOf('bg')
-  const bgImg = imagesArray[bgImgIndx][imagesKeys[bgImgIndx]]
-
-  const buttonIndex = imagesKeys.indexOf('button')
-  const buttonImg = imagesArray[buttonIndex]['button']
+  const bgImg = imagesArray[imagesKeys.indexOf('bg')]['bg']
+  const buttonImg = imagesArray[imagesKeys.indexOf('button')]['button']
   const disabledButtonImg = imagesArray[imagesKeys.indexOf('button_d')]['button_d']
-
   const betLineImage = imagesArray[imagesKeys.indexOf('bet_line')]['bet_line']
-  let isEnd = false
 
   const store = {
     background: {
@@ -79,7 +76,7 @@ window.addEventListener('load', async function () {
       height: 10,
     },
     frame: {
-      color: 'rgba(100, 149, 255, 0.2)',
+      color: 'rgba(205, 204, 205, 0.4)',
       x: CANVAS_WIDTH * 0.5 - 150,
       y: CANVAS_HEIGHT * 0.5 - 120,
       width: 300,
@@ -188,6 +185,7 @@ window.addEventListener('load', async function () {
         }
         isEnd = true
         this.checkWinOrLoose()
+        this.animateFrame()
       }
     }
 
@@ -203,7 +201,28 @@ window.addEventListener('load', async function () {
       }
     }
 
-    drawWinOrLose = () => {
+    animateFrame = () => {
+      gsap.to(store.frame, {
+        duration: 1,
+        x: CANVAS_WIDTH * 0.5 - 230,
+        y: CANVAS_HEIGHT * 0.5 - 200,
+        width: 450,
+        height: 400,
+        ease: 'none',
+      })
+
+      gsap.to(store.frame, {
+        duration: 1,
+        x: CANVAS_WIDTH * 0.5 - 150,
+        y: CANVAS_HEIGHT * 0.5 - 120,
+        width: 300,
+        height: 300,
+        delay: 0.7,
+        ease: 'none',
+      })
+    }
+
+    drawFrame = () => {
       ctx.textAlign = 'center'
       store.spinButton.image = buttonImg
       store.spinButton.x = CANVAS_WIDTH * 0.5 - 50
@@ -233,7 +252,7 @@ window.addEventListener('load', async function () {
       requestAnimationFrame(this.draw)
       this.drawImages()
       if (isEnd) {
-        this.drawWinOrLose()
+        this.drawFrame()
       }
     }
 
@@ -259,6 +278,7 @@ window.addEventListener('load', async function () {
         event.offsetY <= buttonBottomEdge
       ) {
         isRunning = true
+        isEnd = false
         this.animate()
         store.spinButton.image = disabledButtonImg
       }
@@ -268,7 +288,7 @@ window.addEventListener('load', async function () {
         event.offsetY >= 300 &&
         event.offsetY <= 410
       ) {
-       window.location.reload()
+        window.location.reload()
       }
     }
 
